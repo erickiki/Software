@@ -43,6 +43,7 @@ class IngresoController extends Controller
             -> orderBy('i.idingreso','desc')
             -> groupBy('i.idingreso','i.fecha_hora','p.nombre','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.estado')
             -> paginate(7);
+            //dd($ingresos);
             return view('compras.ingreso.index',["ingresos"=>$ingresos,"searchText"=>$query]);
 
         }
@@ -63,13 +64,13 @@ class IngresoController extends Controller
     		$ingreso=new Ingreso;
     		$ingreso->idproveedor=$request->get('idproveedor');
     		$ingreso->tipo_comprobante=$request->get('tipo_comprobante');
-    		$ingreso->serie_comprobane=$request->get('serie_comprobane');
+    		$ingreso->serie_comprobante=$request->get('serie_comprobante');
     		$ingreso->num_comprobante=$request->get('num_comprobante');
     		
-    		$mytime =Carbon::now(America/La_Paz);
+    		$mytime =Carbon::now('America/La_Paz');
     		$ingreso->fecha_hora=$mytime->toDateTimeString();
-    		$ingreso->impuestor='13';
-    		$ingreso->estado='A';
+    		$ingreso->impuesto='13';
+    		$ingreso->estado='Activo';
     		$ingreso->save();
 
     		$idarticulo = $request->get('idarticulo');
@@ -94,7 +95,7 @@ class IngresoController extends Controller
     	}catch(\Exception $e)
     	{
     		DB::rollback();
-
+            
     	}
     	return Redirect::to('compras/ingreso');
     }
@@ -103,13 +104,14 @@ class IngresoController extends Controller
     	$ingreso=DB::table('ingreso as i')
             -> join('persona as p','i.idproveedor','=','p.idpersona')
             -> join('detalle_ingreso as di','i.idingreso','=','di.idingreso')
-            -> select('i.idingreso','i.fecha_hora','p.nombre','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.estado',DB::raw('sum(di.cantidad*precio_compra) as total')) 
+            -> select('i.idingreso','i.fecha_hora','p.nombre','i.tipo_comprobante','i.serie_comprobante','i.num_comprobante','i.impuesto','i.estado',DB::raw('sum(di.cantidad*precio_compra) as total'))
             -> where('i.idingreso','=',$id)
             -> first();
+
         $detalles=DB::table('detalle_ingreso as d')
-        ->join('articulo as a','d.articulo','=','a.idarticulo')
+        ->join('articulo as a','d.idarticulo','=','a.idarticulo')
         ->select('a.nombre as articulo','d.cantidad','d.precio_compra','d.precio_venta')
-        ->where('d.ingreso','=',$id)
+        ->where('d.idingreso','=',$id)
         ->get();
 
     return view("compras.ingreso.show",["ingreso"=>$ingreso,"detalles"=>$detalles]);
@@ -119,7 +121,7 @@ class IngresoController extends Controller
     public function destroy ($id)
     {
     	$ingreso =Ingreso::findOrFail($id);
-    	$ingreso->Estado='C';
+    	$ingreso->Estado='Cancelado';
     	$ingreso->update();
     	return Redirect::to('compras/ingreso');
 
