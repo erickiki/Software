@@ -17,7 +17,7 @@ use sisVentas\Ingreso;
 use sisVentas\DetalleIngreso;
 
 use DB;
-
+// para fecha se utilizara Carbon
 use Carbon\Carbon;
 
 use Response;
