@@ -4,7 +4,7 @@
  
  <div class="row">
  	<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
- 		<h3>Listado de Categorias <a href="categoria/create"><button class="btn btn-success">nuevo</button></a></h3>
+ 		<h3>Listado Categorias <a href="categoria/create"><button class="btn btn-success">nuevo</button></a></h3>
  		@include('almacen.categoria.search')
  	</div>
 
