@@ -14,6 +14,6 @@ class ExampleTest extends TestCase
     public function testBasicExample()
     {
         $this->visit('/almacen/categoria')
-             ->see('Almacenes--');
+             ->see('Carlos');
     }
 }
